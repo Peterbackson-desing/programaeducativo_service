@@ -83,6 +83,14 @@ public class ProgramaEducativoService {
                 .collect(Collectors.toList());
 
         return resultado;
-    }
+        }
+        // Habilitar un Programa Educativo -- Maria Fernanda Rosas Briones IDGS12--
+        @Transactional
+        public ProgramaEducativoEntity habilitarPrograma(Integer id) {
+            ProgramaEducativoEntity programa = programaEducativoRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Programa no encontrado con ID: " + id));
 
+            programa.setActivo(true);
+            return programaEducativoRepository.save(programa);
+        }
 }

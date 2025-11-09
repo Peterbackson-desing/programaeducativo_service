@@ -9,6 +9,7 @@ import com.idgs12.programaeducativo.programaeducativo_service.dto.*;
 import com.idgs12.programaeducativo.programaeducativo_service.entity.ProgramaEducativoEntity;
 import com.idgs12.programaeducativo.programaeducativo_service.services.ProgramaEducativoService;
 
+
 @RestController
 @RequestMapping("/programas")
 @CrossOrigin(origins = "*")
@@ -28,4 +29,11 @@ public class ProgramaEducativoController {
         List<ProgramaDivisionDTO> programas = service.findAll();
         return ResponseEntity.ok(programas);
     }
+    //Habilitar programa -- Maria Fernanda Rosas Briones IDGS12--
+    @PutMapping("/habilitar/{id}")
+    public ResponseEntity<ProgramaEducativoEntity> habilitar(@PathVariable Integer id) {
+        ProgramaEducativoEntity programa = service.habilitarPrograma(id);
+        return ResponseEntity.ok(programa);
+    }
+
 }
