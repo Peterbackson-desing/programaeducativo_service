@@ -28,4 +28,12 @@ public class ProgramaEducativoController {
         List<ProgramaDivisionDTO> programas = service.findAll();
         return ResponseEntity.ok(programas);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ProgramaEducativoEntity> editar(
+            @PathVariable Integer id,
+            @RequestBody ProgramaEducativoDTO dto) {
+        ProgramaEducativoEntity programa = service.editarPrograma(id, dto);
+        return ResponseEntity.ok(programa);
+    }
 }
