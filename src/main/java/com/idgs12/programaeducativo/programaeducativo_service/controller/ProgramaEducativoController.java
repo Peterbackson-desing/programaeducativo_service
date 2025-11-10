@@ -45,7 +45,7 @@ public class ProgramaEducativoController {
         return ResponseEntity.ok(programa);
     }
 
-    // Deshabilitar Programa Educativo Cecilia Mendoza Artega
+    // Deshabilitar Programa Educativo - Cecilia Mendoza Artega
     @PutMapping("/deshabilitar/{id}")
     public ResponseEntity<ProgramaEducativoEntity> deshabilitarPrograma(@PathVariable Integer id) {
         ProgramaEducativoEntity programa = service.deshabilitarPrograma(id);

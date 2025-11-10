@@ -102,7 +102,7 @@ public class ProgramaEducativoService {
         return programaEducativoRepository.save(programa);
     }
 
-    // Deshabilitar un Programa Educativo  Cecilia Mendoza Artega 
+    // Deshabilitar un Programa Educativo - Cecilia Mendoza Artega 
     @Transactional
     public ProgramaEducativoEntity deshabilitarPrograma(Integer id) {
         // Buscar el programa por ID
