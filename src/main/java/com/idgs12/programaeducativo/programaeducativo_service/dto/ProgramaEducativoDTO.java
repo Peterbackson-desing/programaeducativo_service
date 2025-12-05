@@ -4,7 +4,9 @@ import lombok.Data;
 
 @Data
 public class ProgramaEducativoDTO {
-    private Long idDivision;
+    private Long id;
     private String nombre;
     private String descripcion;
+    private Boolean activo;
+    private Long idDivision;
 }
