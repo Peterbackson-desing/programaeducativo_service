@@ -8,5 +8,6 @@ public class ProgramaDivisionDTO {
     private String nombrePrograma;
     private String descripcionPrograma;
     private String nombreDivision;
+    private Long idDivision;
     private boolean activo;
 }

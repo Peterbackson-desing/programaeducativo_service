@@ -32,7 +32,7 @@ public class ProgramaEducativoController {
         return ResponseEntity.ok(programa);
     }
 
-    // Listar o visualizar todos los Programas Educativos -- Alondra Itzel Pacheco de Jesus IDGS12 --
+    // Listar o visualizar todos los Programas Educativos
     @GetMapping("/all")
     public ResponseEntity<List<ProgramaDivisionDTO>> findAll() {
         List<ProgramaDivisionDTO> programas = service.findAll();
@@ -61,4 +61,19 @@ public class ProgramaEducativoController {
         return ResponseEntity.ok(programa);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ProgramaEducativoDTO> getProgramaById(@PathVariable Integer id) {
+        ProgramaEducativoDTO programa = service.obtenerPorId(id);
+        if (programa != null) {
+            return ResponseEntity.ok(programa);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PostMapping("/by-ids")
+    public ResponseEntity<List<ProgramaEducativoDTO>> obtenerProgramasPorIds(@RequestBody List<Integer> ids) {
+        List<ProgramaEducativoDTO> programas = service.obtenerProgramasPorIds(ids);
+        return ResponseEntity.ok(programas);
+    }
 }

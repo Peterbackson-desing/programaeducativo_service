@@ -48,7 +48,7 @@ public class ProgramaEducativoService {
         return programaEducativoRepository.save(programa);
     }
 
-    // Listar todos los Programas Educativos con su División -- Alondra Itzel Pacheco de Jesus IDGS12 --
+    // Listar todos los programas con información de divisiones
     @Transactional(readOnly = true)
     public List<ProgramaDivisionDTO> findAll() {
         List<ProgramaEducativoEntity> programas = programaEducativoRepository.findAll();
@@ -60,16 +60,20 @@ public class ProgramaEducativoService {
                 .collect(Collectors.toList());
 
         Map<Long, String> divisionIdNombreMap = new HashMap<>();
-        List<DivisionDTO> divisiones = divisionFeignClient.obtenerDivisionesPorIds(idsDivisiones);
 
-        if (divisiones != null) {
-            for (DivisionDTO dto : divisiones) {
-                if (dto != null) {
-                    divisionIdNombreMap.put(dto.getId(), dto.getNombre());
+        if (!idsDivisiones.isEmpty()) {
+            List<DivisionDTO> divisiones = divisionFeignClient.obtenerDivisionesPorIds(idsDivisiones);
+
+            if (divisiones != null) {
+                for (DivisionDTO dto : divisiones) {
+                    if (dto != null) {
+                        divisionIdNombreMap.put(dto.getId(), dto.getNombre());
+                    }
                 }
             }
         }
 
+<<<<<<< HEAD
         List<ProgramaDivisionDTO> resultado = programas.stream()
                 .map(programa -> {
                     ProgramaDivisionDTO dto = new ProgramaDivisionDTO();
@@ -92,17 +96,7 @@ public class ProgramaEducativoService {
 
         return resultado;
     }
-    // Habilitar un Programa Educativo -- Maria Fernanda Rosas Briones IDGS12--
-
-    @Transactional
-    public ProgramaEducativoEntity habilitarPrograma(Integer id) {
-        ProgramaEducativoEntity programa = programaEducativoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Programa no encontrado con ID: " + id));
-
-        programa.setActivo(true);
-        return programaEducativoRepository.save(programa);
-    }
-
+    
     // Deshabilitar un Programa Educativo - Cecilia Mendoza Artega 
     @Transactional
     public ProgramaEducativoEntity deshabilitarPrograma(Integer id) {
@@ -115,8 +109,39 @@ public class ProgramaEducativoService {
 
         // Guardar los cambios en la base de datos
         return programaEducativoRepository.save(programa);
+=======
+        return programas.stream().map(programa -> {
+            ProgramaDivisionDTO dto = new ProgramaDivisionDTO();
+            dto.setId(programa.getId());
+            dto.setNombrePrograma(programa.getNombre());
+            dto.setDescripcionPrograma(programa.getDescripcion());
+            dto.setActivo(programa.isActivo());
+
+            if (programa.getDivisionProgramas() != null && !programa.getDivisionProgramas().isEmpty()) {
+                DivisionProgramaEntity relacion = programa.getDivisionProgramas().get(0);
+                if (relacion != null && relacion.getIdDivision() != null) {
+                    Long idDivision = relacion.getIdDivision();
+                    dto.setIdDivision(idDivision);
+                    String nombreDivision = divisionIdNombreMap.get(idDivision);
+                    dto.setNombreDivision(nombreDivision != null ? nombreDivision : "Sin dato de división");
+                }
+            }
+            return dto;
+        }).collect(Collectors.toList());
+>>>>>>> 13b5c69 (feat: actualización de visualización de Programas Educativos (DTOs, Service y Controller))
     }
 
+    // Habilitar un Programa Educativo -- Maria Fernanda Rosas Briones IDGS12--
+    @Transactional
+    public ProgramaEducativoEntity habilitarPrograma(Integer id) {
+        ProgramaEducativoEntity programa = programaEducativoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Programa no encontrado con ID: " + id));
+
+        programa.setActivo(true);
+        return programaEducativoRepository.save(programa);
+    }
+
+    // Editar un Programa Educativo
     @Transactional
     public ProgramaEducativoEntity editarPrograma(Integer id, ProgramaEducativoDTO dto) {
         ProgramaEducativoEntity programa = programaEducativoRepository.findById(id)
@@ -144,4 +169,44 @@ public class ProgramaEducativoService {
         return programaEducativoRepository.save(programa);
     }
 
+    // Deshabilitar un Programa Educativo
+
+    // Obtener programa por ID
+    @Transactional(readOnly = true)
+    public ProgramaEducativoDTO obtenerPorId(Integer id) {
+        ProgramaEducativoEntity programa = programaEducativoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Programa no encontrado con ID: " + id));
+
+        ProgramaEducativoDTO dto = new ProgramaEducativoDTO();
+        dto.setId(programa.getId());
+        dto.setNombre(programa.getNombre());
+        dto.setDescripcion(programa.getDescripcion());
+        dto.setActivo(programa.isActivo());
+
+        if (!programa.getDivisionProgramas().isEmpty()) {
+            DivisionProgramaEntity relacion = programa.getDivisionProgramas().get(0);
+            dto.setIdDivision(relacion.getIdDivision());
+        }
+
+        return dto;
+    }
+
+    // Obtener programas por lista de IDs (para el FeignClient POST /by-ids)
+    @Transactional(readOnly = true)
+    public List<ProgramaEducativoDTO> obtenerProgramasPorIds(List<Integer> ids) {
+        List<ProgramaEducativoEntity> programas = programaEducativoRepository.findAllById(ids);
+        return programas.stream().map(programa -> {
+            ProgramaEducativoDTO dto = new ProgramaEducativoDTO();
+            dto.setId(programa.getId());
+            dto.setNombre(programa.getNombre());
+            dto.setDescripcion(programa.getDescripcion());
+            dto.setActivo(programa.isActivo());
+
+            if (!programa.getDivisionProgramas().isEmpty()) {
+                DivisionProgramaEntity relacion = programa.getDivisionProgramas().get(0);
+                dto.setIdDivision(relacion.getIdDivision());
+            }
+            return dto;
+        }).collect(Collectors.toList());
+    }
 }
